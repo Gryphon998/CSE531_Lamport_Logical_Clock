@@ -6,14 +6,12 @@ service BankSystem {
   rpc MsgDelivery (MsgDeliveryRequest) returns (MsgDeliveryReply) {}
 }
 
-// The request message containing the user's name.
 message MsgDeliveryRequest {
   int64 id = 1;
   string interface = 2;
   int64 money = 3;
 }
 
-// The response message containing the greetings
 message MsgDeliveryReply {
   string interface = 1;
   string result = 2;

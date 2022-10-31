@@ -1,4 +1,3 @@
-import datetime
 import json
 import logging
 import multiprocessing
@@ -6,7 +5,6 @@ import sys
 import socket
 import time
 
-import bank_pb2
 import bank_pb2_grpc
 
 from concurrent import futures
@@ -23,7 +21,6 @@ _THREAD_CONCURRENCY = _PROCESS_COUNT
 address_map = {}
 workers = []
 branches = []
-
 
 
 def _reserve_port():
@@ -54,13 +51,14 @@ def branches_init(processes):
     for p in processes:
         if p["type"] == "branch":
             new_branch = Branch(p["id"], p["balance"], [], 'localhost:{}'.format(_reserve_port()))
-            # for b in branches_map.copy().values():
-            #     b.updateBranchesMap(p["id"], new_branch)
-            # stub = bank_pb2_grpc.BankSystemStub(grpc.insecure_channel('localhost:{}'.format(_reserve_port())))
             address_map[new_branch.id] = new_branch.bindAddress
             branches.append(new_branch)
 
     for b in branches:
+        for k, v in address_map.items():
+            if b.id != k:
+                b.add_stub(v)
+
         worker = multiprocessing.Process(target=_run_server,
                                          args=(b,))
         worker.start()

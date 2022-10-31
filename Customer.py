@@ -10,8 +10,6 @@ class Customer:
         self.id = id
         # events from the input
         self.events = events
-        # target branch bind address
-        # self.targetBranchAddress = targetBranchStub
         # a list of received messages used for debugging purpose
         self.recvMsg = list()
         # pointer for the stub
@@ -27,4 +25,4 @@ class Customer:
             id = event["id"]
             interface = event["interface"]
             money = event["money"]
-            print(self.stub.MsgDelivery(bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money)))
+            self.stub.MsgDelivery(bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money))
