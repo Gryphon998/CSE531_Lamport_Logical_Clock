@@ -20,7 +20,10 @@ _LOGGER = logging.getLogger(__name__)
 _PROCESS_COUNT = multiprocessing.cpu_count()
 _THREAD_CONCURRENCY = _PROCESS_COUNT
 
-branch_map = {}
+address_map = {}
+workers = []
+branches = []
+
 
 
 def _reserve_port():
@@ -36,7 +39,7 @@ def _run_server(branch):
                  branch.balance)
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=_THREAD_CONCURRENCY))
-    bank_pb2_grpc.add_BankServicer_to_server(branch, server)
+    bank_pb2_grpc.add_BankSystemServicer_to_server(branch, server)
     server.add_insecure_port(branch.bindAddress)
     server.start()
     server.wait_for_termination()
@@ -48,31 +51,30 @@ def _run_client(customer):
 
 
 def branches_init(processes):
-    workers = []
-
     for p in processes:
         if p["type"] == "branch":
             new_branch = Branch(p["id"], p["balance"], [], 'localhost:{}'.format(_reserve_port()))
-            branch_map[new_branch.id] = new_branch
+            # for b in branches_map.copy().values():
+            #     b.updateBranchesMap(p["id"], new_branch)
+            # stub = bank_pb2_grpc.BankSystemStub(grpc.insecure_channel('localhost:{}'.format(_reserve_port())))
+            address_map[new_branch.id] = new_branch.bindAddress
+            branches.append(new_branch)
 
-            worker = multiprocessing.Process(target=_run_server,
-                                             args=(new_branch,))
-            worker.start()
-            workers.append(worker)
+    for b in branches:
+        worker = multiprocessing.Process(target=_run_server,
+                                         args=(b,))
+        worker.start()
+        workers.append(worker)
 
-    time.sleep(1)
 
+def customer_init(processes):
     for p in processes:
         if p["type"] == "customer":
-            target_branch = branch_map.get(p["id"])
-            new_customer = Customer(p["id"], p["events"], target_branch.bindAddress)
+            new_customer = Customer(p["id"], p["events"], address_map.get(p["id"]))
             worker = multiprocessing.Process(target=_run_client,
                                              args=(new_customer,))
             worker.start()
             workers.append(worker)
-
-    for worker in workers:
-        worker.join()
 
 
 if __name__ == '__main__':
@@ -87,5 +89,10 @@ if __name__ == '__main__':
 
     # Parse input json to initialize branches
     branches_init(input_json)
+    time.sleep(1)
+    customer_init(input_json)
+
+    for worker in workers:
+        worker.join()
 
     f.close()

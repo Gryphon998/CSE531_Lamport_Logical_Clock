@@ -2,18 +2,20 @@ syntax = "proto3";
 
 package proj1;
 
-// The greeting service definition.
-service Bank {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+service BankSystem {
+  rpc MsgDelivery (MsgDeliveryRequest) returns (MsgDeliveryReply) {}
 }
 
 // The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+message MsgDeliveryRequest {
+  int64 id = 1;
+  string interface = 2;
+  int64 money = 3;
 }
 
 // The response message containing the greetings
-message HelloReply {
-  string message = 1;
+message MsgDeliveryReply {
+  string interface = 1;
+  string result = 2;
+  int64 money = 3;
 }

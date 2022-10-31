@@ -14,34 +14,34 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nbank.proto\x12\x05proj1\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t2<\n\x04\x42\x61nk\x12\x34\n\x08SayHello\x12\x13.proj1.HelloRequest\x1a\x11.proj1.HelloReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nbank.proto\x12\x05proj1\"B\n\x12MsgDeliveryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x03\"D\n\x10MsgDeliveryReply\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x03\x32Q\n\nBankSystem\x12\x43\n\x0bMsgDelivery\x12\x19.proj1.MsgDeliveryRequest\x1a\x17.proj1.MsgDeliveryReply\"\x00\x62\x06proto3')
 
 
 
-_HELLOREQUEST = DESCRIPTOR.message_types_by_name['HelloRequest']
-_HELLOREPLY = DESCRIPTOR.message_types_by_name['HelloReply']
-HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_message.Message,), {
-  'DESCRIPTOR' : _HELLOREQUEST,
+_MSGDELIVERYREQUEST = DESCRIPTOR.message_types_by_name['MsgDeliveryRequest']
+_MSGDELIVERYREPLY = DESCRIPTOR.message_types_by_name['MsgDeliveryReply']
+MsgDeliveryRequest = _reflection.GeneratedProtocolMessageType('MsgDeliveryRequest', (_message.Message,), {
+  'DESCRIPTOR' : _MSGDELIVERYREQUEST,
   '__module__' : 'bank_pb2'
-  # @@protoc_insertion_point(class_scope:proj1.HelloRequest)
+  # @@protoc_insertion_point(class_scope:proj1.MsgDeliveryRequest)
   })
-_sym_db.RegisterMessage(HelloRequest)
+_sym_db.RegisterMessage(MsgDeliveryRequest)
 
-HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Message,), {
-  'DESCRIPTOR' : _HELLOREPLY,
+MsgDeliveryReply = _reflection.GeneratedProtocolMessageType('MsgDeliveryReply', (_message.Message,), {
+  'DESCRIPTOR' : _MSGDELIVERYREPLY,
   '__module__' : 'bank_pb2'
-  # @@protoc_insertion_point(class_scope:proj1.HelloReply)
+  # @@protoc_insertion_point(class_scope:proj1.MsgDeliveryReply)
   })
-_sym_db.RegisterMessage(HelloReply)
+_sym_db.RegisterMessage(MsgDeliveryReply)
 
-_BANK = DESCRIPTOR.services_by_name['Bank']
+_BANKSYSTEM = DESCRIPTOR.services_by_name['BankSystem']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _HELLOREQUEST._serialized_start=21
-  _HELLOREQUEST._serialized_end=49
-  _HELLOREPLY._serialized_start=51
-  _HELLOREPLY._serialized_end=80
-  _BANK._serialized_start=82
-  _BANK._serialized_end=142
+  _MSGDELIVERYREQUEST._serialized_start=21
+  _MSGDELIVERYREQUEST._serialized_end=87
+  _MSGDELIVERYREPLY._serialized_start=89
+  _MSGDELIVERYREPLY._serialized_end=157
+  _BANKSYSTEM._serialized_start=159
+  _BANKSYSTEM._serialized_end=240
 # @@protoc_insertion_point(module_scope)

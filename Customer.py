@@ -11,16 +11,20 @@ class Customer:
         # events from the input
         self.events = events
         # target branch bind address
-        self.targetBranchAddress = address
+        # self.targetBranchAddress = targetBranchStub
         # a list of received messages used for debugging purpose
         self.recvMsg = list()
         # pointer for the stub
-        self.stub = self.createStub()
+        self.stub = self.createStub(address)
 
     # TODO: students are expected to create the Customer stub
-    def createStub(self):
-        return bank_pb2_grpc.BankStub(grpc.insecure_channel(self.targetBranchAddress))
+    def createStub(self, address):
+        return bank_pb2_grpc.BankSystemStub(grpc.insecure_channel(address))
 
     # TODO: students are expected to send out the events to the Bank
     def executeEvents(self):
-        print(self.stub.SayHello(bank_pb2.HelloRequest(name='customer ' + str(self.id))))
+        for event in self.events:
+            id = event["id"]
+            interface = event["interface"]
+            money = event["money"]
+            print(self.stub.MsgDelivery(bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money)))
