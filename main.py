@@ -43,8 +43,7 @@ def _run_server(branch):
 
 
 def _run_client(customer):
-    _LOGGER.info('Sending request from customer %d.', customer.id)
-    return customer.executeEvents()
+    _LOGGER.info(customer.executeEvents())
 
 
 def branches_init(processes):
@@ -76,7 +75,7 @@ def customer_init(processes):
 
 
 if __name__ == '__main__':
-    handler = logging.StreamHandler(sys.stdout)
+    handler = logging.FileHandler('output.log', 'w+')
     formatter = logging.Formatter('[PID %(process)d] %(message)s')
     handler.setFormatter(formatter)
     _LOGGER.addHandler(handler)

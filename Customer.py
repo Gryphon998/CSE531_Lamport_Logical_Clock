@@ -2,6 +2,7 @@ import grpc
 
 import bank_pb2
 import bank_pb2_grpc
+from google.protobuf.json_format import MessageToDict
 
 
 class Customer:
@@ -25,4 +26,11 @@ class Customer:
             id = event["id"]
             interface = event["interface"]
             money = event["money"]
-            self.stub.MsgDelivery(bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money))
+            msg = MessageToDict(self.stub.MsgDelivery(bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money)))
+
+            if interface == "deposit" or interface == "withdraw":
+                del msg['money']
+
+            self.recvMsg.append(msg)
+
+        return {"id": self.id, "recv": self.recvMsg}
