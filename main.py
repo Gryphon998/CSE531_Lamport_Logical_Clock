@@ -32,8 +32,8 @@ def _reserve_port():
 
 def _run_server(branch):
     """Start a server in a subprocess."""
-    _LOGGER.info("Initialize new branch @ %s: id - %d, balance - %d ", branch.bindAddress, branch.id,
-                 branch.balance)
+    # _LOGGER.info("Initialize new branch @ %s: id - %d, balance - %d ", branch.bindAddress, branch.id,
+    #              branch.balance)
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=_THREAD_CONCURRENCY))
     bank_pb2_grpc.add_BankSystemServicer_to_server(branch, server)
@@ -43,13 +43,13 @@ def _run_server(branch):
 
 
 def _run_client(customer):
-    _LOGGER.info(customer.executeEvents())
+    customer.executeEvents()
 
 
 def branches_init(processes):
     for p in processes:
         if p["type"] == "branch":
-            new_branch = Branch(p["id"], p["balance"], [], 'localhost:{}'.format(_reserve_port()))
+            new_branch = Branch(p["id"], p["balance"], [], 'localhost:{}'.format(_reserve_port()), 0, _LOGGER)
             address_map[new_branch.id] = new_branch.bindAddress
             branches.append(new_branch)
 
@@ -67,7 +67,7 @@ def branches_init(processes):
 def customer_init(processes):
     for p in processes:
         if p["type"] == "customer":
-            new_customer = Customer(p["id"], p["events"], address_map.get(p["id"]))
+            new_customer = Customer(p["id"], p["events"], address_map.get(p["id"]), 0)
             worker = multiprocessing.Process(target=_run_client,
                                              args=(new_customer,))
             worker.start()
@@ -75,7 +75,8 @@ def customer_init(processes):
 
 
 if __name__ == '__main__':
-    handler = logging.FileHandler('output.log', 'w+')
+    #handler = logging.FileHandler('output.log', 'w+')
+    handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('[PID %(process)d] %(message)s')
     handler.setFormatter(formatter)
     _LOGGER.addHandler(handler)

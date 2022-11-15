@@ -6,7 +6,7 @@ from google.protobuf.json_format import MessageToDict
 
 
 class Customer:
-    def __init__(self, id, events, address):
+    def __init__(self, id, events, address, clock):
         # unique ID of the Customer
         self.id = id
         # events from the input
@@ -15,6 +15,7 @@ class Customer:
         self.recvMsg = list()
         # pointer for the stub
         self.stub = self.createStub(address)
+        self.clock = clock
 
     # TODO: students are expected to create the Customer stub
     def createStub(self, address):
@@ -26,7 +27,11 @@ class Customer:
             id = event["id"]
             interface = event["interface"]
             money = event["money"]
-            msg = MessageToDict(self.stub.MsgDelivery(bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money)))
+            clock = self.clock
+            if interface != "query":
+                clock += 1
+            msg = MessageToDict(self.stub.MsgDelivery(
+                bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money, clock=clock)))
 
             if interface == "deposit" or interface == "withdraw":
                 del msg['money']

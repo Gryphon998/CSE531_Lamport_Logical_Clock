@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nbank.proto\x12\x05proj1\"B\n\x12MsgDeliveryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x03\"D\n\x10MsgDeliveryReply\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x03\x32Q\n\nBankSystem\x12\x43\n\x0bMsgDelivery\x12\x19.proj1.MsgDeliveryRequest\x1a\x17.proj1.MsgDeliveryReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nbank.proto\x12\x05proj1\"Q\n\x12MsgDeliveryRequest\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x03\x12\r\n\x05\x63lock\x18\x04 \x01(\x03\"S\n\x10MsgDeliveryReply\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x03\x12\r\n\x05\x63lock\x18\x04 \x01(\x03\x32Q\n\nBankSystem\x12\x43\n\x0bMsgDelivery\x12\x19.proj1.MsgDeliveryRequest\x1a\x17.proj1.MsgDeliveryReply\"\x00\x62\x06proto3')
 
 
 
@@ -39,9 +39,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _MSGDELIVERYREQUEST._serialized_start=21
-  _MSGDELIVERYREQUEST._serialized_end=87
-  _MSGDELIVERYREPLY._serialized_start=89
-  _MSGDELIVERYREPLY._serialized_end=157
-  _BANKSYSTEM._serialized_start=159
-  _BANKSYSTEM._serialized_end=240
+  _MSGDELIVERYREQUEST._serialized_end=102
+  _MSGDELIVERYREPLY._serialized_start=104
+  _MSGDELIVERYREPLY._serialized_end=187
+  _BANKSYSTEM._serialized_start=189
+  _BANKSYSTEM._serialized_end=270
 # @@protoc_insertion_point(module_scope)

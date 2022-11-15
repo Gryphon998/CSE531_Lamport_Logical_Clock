@@ -1,6 +1,6 @@
-[PID 12495] Initialize new branch @ localhost:57199: id - 1, balance - 400 
-[PID 12502] Initialize new branch @ localhost:56413: id - 2, balance - 400 
-[PID 12509] Initialize new branch @ localhost:40821: id - 3, balance - 400 
-[PID 12519] {'id': 1, 'recv': [{'interface': 'query', 'result': 'success', 'money': '500'}]}
-[PID 12526] {'id': 2, 'recv': [{'interface': 'deposit', 'result': 'success'}, {'interface': 'query', 'result': 'success', 'money': '500'}]}
-[PID 12531] {'id': 3, 'recv': [{'interface': 'withdraw', 'result': 'success'}, {'interface': 'query', 'result': 'success', 'money': '500'}]}
+[PID 11862] Initialize new branch @ localhost:51099: id - 1, balance - 400 
+[PID 11869] Initialize new branch @ localhost:35917: id - 2, balance - 400 
+[PID 11873] Initialize new branch @ localhost:54523: id - 3, balance - 400 
+[PID 11891] {'id': 1, 'recv': [{'interface': 'query', 'result': 'success', 'money': '500', 'clock': '7'}]}
+[PID 11898] {'id': 2, 'recv': [{'interface': 'deposit', 'result': 'success', 'clock': '5'}, {'interface': 'query', 'result': 'success', 'money': '500', 'clock': '9'}]}
+[PID 11909] {'id': 3, 'recv': [{'interface': 'withdraw', 'result': 'success', 'clock': '8'}, {'interface': 'query', 'result': 'success', 'money': '500', 'clock': '8'}]}
