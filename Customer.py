@@ -1,3 +1,5 @@
+from time import sleep
+
 import grpc
 
 import bank_pb2
@@ -6,7 +8,7 @@ from google.protobuf.json_format import MessageToDict
 
 
 class Customer:
-    def __init__(self, id, events, address, clock):
+    def __init__(self, id, events, address):
         # unique ID of the Customer
         self.id = id
         # events from the input
@@ -15,7 +17,8 @@ class Customer:
         self.recvMsg = list()
         # pointer for the stub
         self.stub = self.createStub(address)
-        self.clock = clock
+        # set initial logical clock as 0
+        self.clock = 0
 
     # TODO: students are expected to create the Customer stub
     def createStub(self, address):
@@ -30,6 +33,9 @@ class Customer:
             clock = self.clock
             if interface != "query":
                 clock += 1
+            else:
+                sleep(3)
+
             msg = MessageToDict(self.stub.MsgDelivery(
                 bank_pb2.MsgDeliveryRequest(id=id, interface=interface, money=money, clock=clock)))
 
