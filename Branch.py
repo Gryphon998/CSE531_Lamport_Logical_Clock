@@ -26,7 +26,6 @@ class Branch(bank_pb2_grpc.BankSystemServicer):
         self.clock = 0
         # branch logger init with branch id
         self.branch_logger = branch_logger
-        self.branch_logger[self.id] = []
         # event logger init
         self.event_logger = event_logger
 
@@ -141,9 +140,13 @@ class Branch(bank_pb2_grpc.BankSystemServicer):
         self.stubList.append(bank_pb2_grpc.BankSystemStub(grpc.insecure_channel(address)))
 
     def add_branch_log(self, log):
-        curr = self.branch_logger[self.id]
-        curr.append(log)
-        self.branch_logger[self.id] = curr
+        if self.id not in self.branch_logger.keys():
+            self.branch_logger[self.id] = [log]
+        else:
+            curr = self.branch_logger[self.id]
+            curr.append(log)
+            self.branch_logger[self.id] = curr
+
 
     def add_event_log(self, id, log):
         if id not in self.event_logger.keys():
