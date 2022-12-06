@@ -1,4 +1,4 @@
-# CSE531-Proj1
+# CSE531-Proj2
  
 Run steps -
 1. python main.py input.json
