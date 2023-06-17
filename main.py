@@ -1,19 +1,15 @@
+import grpc
 import json
 import logging
 import multiprocessing
-import sys
 import socket
+import sys
 import time
-
-import bank_pb2_grpc
-
 from concurrent import futures
 
-import grpc
-
+import bank_pb2_grpc
 from Branch import Branch
 from Customer import Customer
-
 
 _LOGGER = logging.getLogger(__name__)
 _PROCESS_COUNT = multiprocessing.cpu_count()
@@ -32,36 +28,40 @@ def _reserve_port():
 
 
 def _run_server(branch):
-    """Start a server in a subprocess."""
-    _LOGGER.info("Initialize new branch @ %s: id - %d, balance - %d ", branch.bindAddress, branch.id,
+    """Start a branch serve in a subprocess with the passed in branch information."""
+    _LOGGER.info("Initialize a new branch @ %s - id: %d, balance: %d.", branch.bind_address, branch.id,
                  branch.balance)
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=_THREAD_CONCURRENCY))
     bank_pb2_grpc.add_BankSystemServicer_to_server(branch, server)
-    server.add_insecure_port(branch.bindAddress)
+    server.add_insecure_port(branch.bind_address)
     server.start()
     server.wait_for_termination()
 
 
 def _run_client(customer):
+    """Start a customer serve with the passed in customer information."""
+    _LOGGER.info("Initialize a new customer - id: %d.", customer.id)
+
     customer.executeEvents()
 
 
 def _log_output(branch_logger, event_logger):
+    """Store every branch's branch and event logs into 'output.log' file."""
     time.sleep(5)
     output = list()
 
-    for k, v in branch_logger.items():
-        d = dict()
-        d["pid"] = k
-        d["data"] = v
-        output.append(d)
+    for pid, data in branch_logger.items():
+        branch_log = dict()
+        branch_log["pid"] = pid
+        branch_log["data"] = data
+        output.append(branch_log)
 
-    for k, v in event_logger.items():
-        d = dict()
-        d["eventid"] = k
-        d["data"] = v
-        output.append(d)
+    for id, data in event_logger.items():
+        event_log = dict()
+        event_log["eventid"] = id
+        event_log["data"] = data
+        output.append(event_log)
 
     _LOGGER.info(output)
 
@@ -73,27 +73,39 @@ def _log_output(branch_logger, event_logger):
 
 
 def branches_init(processes, branch_logger, event_logger):
-    for p in processes:
-        if p["type"] == "branch":
-            new_branch = Branch(p["id"], p["balance"], [], 'localhost:{}'.format(_reserve_port()), branch_logger, event_logger)
-            address_map[new_branch.id] = new_branch.bindAddress
+    """
+    Init branches based on the information of input json.
+    :param processes: processes recorded in json file
+    :param branch_logger: a logger to log all the branch activities
+    :param event_logger: a logger to log all the events between branch and customer
+    """
+    for process in processes:
+        if process["type"] == "branch":
+            new_branch = Branch(process["id"], process["balance"], 'localhost:{}'.format(_reserve_port()),
+                                branch_logger, event_logger)
+            address_map[new_branch.id] = new_branch.bind_address
             branches.append(new_branch)
 
-    for b in branches:
-        for k, v in address_map.items():
-            if b.id != k:
-                b.add_stub(v)
+    # Add all other branches' addresses to a branch.
+    for branch in branches:
+        for id, address in address_map.items():
+            if branch.id != id:
+                branch.add_stub(address)
 
         worker = multiprocessing.Process(target=_run_server,
-                                         args=(b,))
+                                         args=(branch,))
         worker.start()
         workers.append(worker)
 
 
 def customer_init(processes):
-    for p in processes:
-        if p["type"] == "customer":
-            new_customer = Customer(p["id"], p["events"], address_map.get(p["id"]))
+    """
+    Init customers based on the information of input json.
+    :param processes: processes recorded in json file
+    """
+    for process in processes:
+        if process["type"] == "customer":
+            new_customer = Customer(process["id"], process["events"], address_map.get(process["id"]))
             worker = multiprocessing.Process(target=_run_client,
                                              args=(new_customer,))
             worker.start()
@@ -106,7 +118,6 @@ if __name__ == '__main__':
     handler.setFormatter(formatter)
     _LOGGER.addHandler(handler)
     _LOGGER.setLevel(logging.INFO)
-
     f = open(sys.argv[1])
     input_json = json.load(f)
 
@@ -114,12 +125,12 @@ if __name__ == '__main__':
     branch_logger = manager.dict()
     event_logger = manager.dict()
 
-    # Parse input json to initialize branches
+    # Parse input json to initialize branches and customers with 1 second interval.
     branches_init(input_json, branch_logger, event_logger)
     time.sleep(1)
     customer_init(input_json)
 
-    # Print log to output.log
+    # Start a new thread to store log to output.log
     worker = multiprocessing.Process(target=_log_output, args=(branch_logger, event_logger))
     worker.start()
     workers.append(worker)

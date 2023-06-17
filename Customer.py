@@ -1,31 +1,27 @@
-from time import sleep
-
 import grpc
+from time import sleep
+from google.protobuf.json_format import MessageToDict
 
 import bank_pb2
 import bank_pb2_grpc
-from google.protobuf.json_format import MessageToDict
 
 
 class Customer:
     def __init__(self, id, events, address):
         # unique ID of the Customer
         self.id = id
-        # events from the input
+        # events from the input json
         self.events = events
-        # a list of received messages used for debugging purpose
-        self.recvMsg = list()
         # pointer for the stub
         self.stub = self.createStub(address)
         # set initial logical clock as 0
         self.clock = 0
 
-    # TODO: students are expected to create the Customer stub
     def createStub(self, address):
         return bank_pb2_grpc.BankSystemStub(grpc.insecure_channel(address))
 
-    # TODO: students are expected to send out the events to the Bank
     def executeEvents(self):
+        """Execute the event from input json and increase the clock by 1."""
         for event in self.events:
             id = event["id"]
             interface = event["interface"]
@@ -41,7 +37,3 @@ class Customer:
 
             if interface == "deposit" or interface == "withdraw":
                 del msg['money']
-
-            self.recvMsg.append(msg)
-
-        return {"id": self.id, "recv": self.recvMsg}

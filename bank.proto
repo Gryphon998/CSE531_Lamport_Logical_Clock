@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proj1;
+package lamport_logical_clock;
 
 service BankSystem {
   rpc MsgDelivery (MsgDeliveryRequest) returns (MsgDeliveryReply) {}
