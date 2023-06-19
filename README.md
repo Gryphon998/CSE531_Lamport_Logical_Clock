@@ -80,9 +80,7 @@ This description is for the client branch, which receives propagate responses fr
 python ./main.py input.json
 ```
 
-## 
-
-## Project Requirements
+##  Requirements
 ### Purpose
 The goal of this project is to implement Lamport’s logical clock algorithm between Branches and Customers processes as shown in Diagram A.
 <p align="center">
